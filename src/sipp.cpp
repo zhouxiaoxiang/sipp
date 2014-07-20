@@ -1217,6 +1217,9 @@ int main(int argc, char *argv[])
     globalVariables = new AllocVariableTable(NULL);
     userVariables = new AllocVariableTable(globalVariables);
 
+    // Force stdout to be line buffered, so statistics printing works
+    setvbuf(stdout, (char *)NULL, _IOLBF, 0); 
+
     /* Command line parsing */
 #define REQUIRE_ARG() if((++argi) >= argc) { ERROR("Missing argument for param '%s'.\n" \
 				     "Use 'sipp -h' for details",  argv[argi - 1]); }
