@@ -26,7 +26,11 @@
 #define MAX_HEADER_LEN 2049
 
 char *get_call_id(const char *msg);
+const char *get_trimmed_call_id(const char *msg);
 char *get_peer_tag(const char *msg);
+void getContactURL (const char* msg, char* buf);
+void getRequestURI (const char* msg, char* buf);
+
 
 int get_method(char *msg);
 unsigned long int get_cseq_value(char *msg);

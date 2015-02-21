@@ -23,6 +23,7 @@
 #include <map>
 #include <iterator>
 #include <list>
+#include <set>
 #include <sys/types.h>
 #include <string.h>
 #include <assert.h>
@@ -41,8 +42,10 @@ public:
 protected:
     void startListening();
     void stopListening();
+    void addKey(const char* id);
 
     char *id;
+    std::set<std::string> keys;
     bool listening;
 };
 

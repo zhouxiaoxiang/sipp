@@ -40,18 +40,30 @@ listener::listener(const char *id, bool listening)
 void listener::startListening()
 {
     assert(!listening);
-    listeners.insert(pair<listener_map::key_type,listener *>(listener_map::key_type(id),this));
+    addKey(id);
     listening = true;
+}
+
+void listener::addKey(const char* id)
+{
+    std::string key(id);
+    if (keys.find(key) == keys.end()) {
+        keys.insert(key);
+        listeners.insert(pair<listener_map::key_type,listener *>(key,this));
+    }
 }
 
 void listener::stopListening()
 {
     assert(listening);
 
-    listener_map::iterator listener_it;
-    listener_it = listeners.find(listener_map::key_type(id));
-    listeners.erase(listener_it);
-
+    for (std::set<std::string>::iterator key_it = keys.begin();
+         key_it != keys.end();
+         key_it++) {
+        listener_map::iterator listener_it2 = listeners.find(*key_it);
+        listeners.erase(listener_it2);
+    }
+    
     listening = false;
 }
 
