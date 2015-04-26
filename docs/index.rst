@@ -17,12 +17,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   install
    custom_scenarios
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
