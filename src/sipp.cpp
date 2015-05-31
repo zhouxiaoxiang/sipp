@@ -816,7 +816,7 @@ static void traffic_thread()
 
 static void rtp_echo_thread(void* param)
 {
-    char msg[media_bufsize];
+    char* msg = new char[media_bufsize];
     size_t nr, ns;
     sipp_socklen_t len;
     struct sockaddr_storage remote_rtp_addr;
@@ -828,6 +828,7 @@ static void rtp_echo_thread(void* param)
     rc = pthread_sigmask(SIG_BLOCK, &mask, NULL);
     if (rc) {
         WARNING("pthread_sigmask returned %d", rc);
+        delete[] msg;
         return;
     }
 
@@ -843,6 +844,7 @@ static void rtp_echo_thread(void* param)
             WARNING("%s %i",
                     "Error on RTP echo reception - stopping echo - errno=",
                     errno);
+            delete[] msg;
             return;
         }
         ns = sendto(*(int *)param, msg, nr,
@@ -853,6 +855,7 @@ static void rtp_echo_thread(void* param)
             WARNING("%s %i",
                     "Error on RTP echo transmission - stopping echo - errno=",
                     errno);
+            delete[] msg;
             return;
         }
 
@@ -865,6 +868,7 @@ static void rtp_echo_thread(void* param)
             rtp2_bytes += ns;
         }
     }
+    delete[] msg;
 }
 
 /* Wrap the help text. */
@@ -1873,7 +1877,7 @@ int main(int argc, char *argv[])
                     ERROR("Could not open plugin %s: %s", argv[argi], dlerror());
                 }
 
-                init = (int (*)())dlsym(handle, "init");
+                *(void **)(&init) = dlsym(handle, "init");
                 if((error = (char *) dlerror())) {
                     ERROR("Could not locate init function in %s: %s", argv[argi], dlerror());
                 }

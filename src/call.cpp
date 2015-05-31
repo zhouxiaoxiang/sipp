@@ -54,7 +54,7 @@
 #include "auth.hpp"
 #include "deadcall.hpp"
 
-#define callDebug(args...) do { if (useCallDebugf) { _callDebug( args ); } } while (0)
+#define callDebug(...) do { if (useCallDebugf) { _callDebug( __VA_ARGS__ ); } } while (0)
 
 extern  map<string, struct sipp_socket *>     map_perip_fd;
 
