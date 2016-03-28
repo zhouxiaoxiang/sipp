@@ -2,6 +2,7 @@
 #define ENDIANSHIM_H 1
 
 #if defined(__CYGWIN) || defined(__LINUX)
+#define _GNU_SOURCE /* required for le16toh on older glibc */
 #include <endian.h>
 #elif defined(__FreeBSD__)
 #include <sys/endian.h>

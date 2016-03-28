@@ -19,6 +19,9 @@
 #include "config.h"
 #endif
 
+/* Include before anything that might include features.h */
+#include "endianshim.h"
+
 #include <pcap.h>
 #include <stdlib.h>
 #include <netinet/in.h>
@@ -34,7 +37,6 @@
 #include <string.h>
 
 #include "defines.h"
-#include "endianshim.h"
 #include "prepare_pcap.h"
 
 /* We define our own structures for Ethernet Header and IPv6 Header as they are not available on CYGWIN.
