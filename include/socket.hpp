@@ -31,10 +31,10 @@ enum ssl_init_status {
 
 extern  SSL_CTX  *sip_trp_ssl_ctx;
 extern  SSL_CTX  *sip_trp_ssl_ctx_client;
-
 const char *sip_tls_error_string(SSL *ssl, int size);
 ssl_init_status FI_init_ssl_context (void);
-#endif
+
+#endif // USE_OPENSSL
 
 int gai_getsockaddr(struct sockaddr_storage* ss, const char* host,
                     unsigned short port, int flags, int family);
@@ -112,15 +112,12 @@ private:
   SSL *ss_ssl;        /* The underlying SSL descriptor for this socket. */
   BIO *ss_bio;        /* The underlying BIO descriptor for this socket. */
 #endif
-
-
   int ss_pollidx; /* The index of this socket in our poll structures. */
 
 #ifdef USE_SCTP
   int sctpstate;
 #endif
 };
-
 
 
 void setup_ctrl_socket();

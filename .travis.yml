@@ -1,12 +1,36 @@
+# Config
+
 language: cpp
-compiler:
-    - gcc
-    - clang
 
 notifications:
     email: false
 
+# https://docs.travis-ci.com/user/ci-environment/
+# Use Trusty so we get a newer compiler which support c++11.
 sudo: required
+dist: trusty
+
+
+# Build matrix (2x compiler, 1x confopts)
+
+compiler:
+    - gcc
+    - clang
+
+env:
+    - CONFOPTS="--with-gsl --with-openssl --with-pcap --with-rtpstream --with-sctp"
+
+# Extend build matrix
+
+matrix:
+    include:
+        - compiler: gcc
+          env: CONFOPTS=""
+        - compiler: gcc
+          env: CONFOPTS="--with-openssl --without-pcap --without-rtpstream"
+
+
+# Build steps
 
 before_install:
     - sudo apt-get -qq update
@@ -15,7 +39,7 @@ before_install:
 before_script:
     - git submodule update --init
     - autoreconf -vifs
-    - ./configure --with-gsl --with-openssl --with-pcap --with-rtpstream --with-sctp
+    - ./configure $CONFOPTS
 
 script:
     - make -j2
