@@ -95,14 +95,14 @@ int gai_getsockaddr(struct sockaddr_storage* ss, const char* host,
 void sockaddr_update_port(struct sockaddr_storage* ss, short port)
 {
     switch (ss->ss_family) {
-    case AF_INET:
-        _RCAST(struct sockaddr_in*, ss)->sin_port = htons(port);
-        break;
-    case AF_INET6:
-        _RCAST(struct sockaddr_in6*, ss)->sin6_port = htons(port);
-        break;
-    default:
-        ERROR("Unsupported family type");
+        case AF_INET:
+            _RCAST(struct sockaddr_in*, ss)->sin_port = htons(port);
+            break;
+        case AF_INET6:
+            _RCAST(struct sockaddr_in6*, ss)->sin6_port = htons(port);
+            break;
+        default:
+            ERROR("Unsupported family type");
     }
 }
 
@@ -356,20 +356,20 @@ const char *sip_tls_error_string(SSL *ssl, int size)
     int err;
     err=SSL_get_error(ssl, size);
     switch(err) {
-    case SSL_ERROR_NONE:
-        return "No error";
-    case SSL_ERROR_WANT_WRITE:
-        return "SSL_read returned SSL_ERROR_WANT_WRITE";
-    case SSL_ERROR_WANT_READ:
-        return "SSL_read returned SSL_ERROR_WANT_READ";
-    case SSL_ERROR_WANT_X509_LOOKUP:
-        return "SSL_read returned SSL_ERROR_WANT_X509_LOOKUP";
-    case SSL_ERROR_SYSCALL:
-        if (size < 0) { /* not EOF */
-            return strerror(errno);
-        } else { /* EOF */
-            return "SSL socket closed on SSL_read";
-        }
+        case SSL_ERROR_NONE:
+            return "No error";
+        case SSL_ERROR_WANT_WRITE:
+            return "SSL_read returned SSL_ERROR_WANT_WRITE";
+        case SSL_ERROR_WANT_READ:
+            return "SSL_read returned SSL_ERROR_WANT_READ";
+        case SSL_ERROR_WANT_X509_LOOKUP:
+            return "SSL_read returned SSL_ERROR_WANT_X509_LOOKUP";
+        case SSL_ERROR_SYSCALL:
+            if (size < 0) { /* not EOF */
+                return strerror(errno);
+            } else { /* EOF */
+                return "SSL socket closed on SSL_read";
+            }
     }
     return "Unknown SSL Error.";
 }
@@ -388,104 +388,104 @@ static char* get_inet_address(const struct sockaddr_storage* addr, char* dst, in
 static bool process_key(int c)
 {
     switch (c) {
-    case '1':
-        currentScreenToDisplay = DISPLAY_SCENARIO_SCREEN;
-        print_statistics(0);
-        break;
-
-    case '2':
-        currentScreenToDisplay = DISPLAY_STAT_SCREEN;
-        print_statistics(0);
-        break;
-
-    case '3':
-        currentScreenToDisplay = DISPLAY_REPARTITION_SCREEN;
-        print_statistics(0);
-        break;
-
-    case '4':
-        currentScreenToDisplay = DISPLAY_VARIABLE_SCREEN;
-        print_statistics(0);
-        break;
-
-    case '5':
-        if (use_tdmmap) {
-            currentScreenToDisplay = DISPLAY_TDM_MAP_SCREEN;
+        case '1':
+            currentScreenToDisplay = DISPLAY_SCENARIO_SCREEN;
             print_statistics(0);
-        }
-        break;
+            break;
 
-        /* Screens 6, 7, 8, 9  are for the extra RTD repartitions. */
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-        currentScreenToDisplay = DISPLAY_SECONDARY_REPARTITION_SCREEN;
-        currentRepartitionToDisplay = (c - '6') + 2;
-        print_statistics(0);
-        break;
+        case '2':
+            currentScreenToDisplay = DISPLAY_STAT_SCREEN;
+            print_statistics(0);
+            break;
 
-    case '+':
-        if (users >= 0) {
-            CallGenerationTask::set_users((int)(users + 1 * rate_scale));
-        } else {
-            CallGenerationTask::set_rate(rate + 1 * rate_scale);
-        }
-        print_statistics(0);
-        break;
+        case '3':
+            currentScreenToDisplay = DISPLAY_REPARTITION_SCREEN;
+            print_statistics(0);
+            break;
 
-    case '-':
-        if (users >= 0) {
-            CallGenerationTask::set_users((int)(users - 1 * rate_scale));
-        } else {
-            CallGenerationTask::set_rate(rate - 1 * rate_scale);
-        }
-        print_statistics(0);
-        break;
+        case '4':
+            currentScreenToDisplay = DISPLAY_VARIABLE_SCREEN;
+            print_statistics(0);
+            break;
 
-    case '*':
-        if (users >= 0) {
-            CallGenerationTask::set_users((int)(users + 10 * rate_scale));
-        } else {
-            CallGenerationTask::set_rate(rate + 10 * rate_scale);
-        }
-        print_statistics(0);
-        break;
+        case '5':
+            if (use_tdmmap) {
+                currentScreenToDisplay = DISPLAY_TDM_MAP_SCREEN;
+                print_statistics(0);
+            }
+            break;
 
-    case '/':
-        if (users >= 0) {
-            CallGenerationTask::set_users((int)(users - 10 * rate_scale));
-        } else {
-            CallGenerationTask::set_rate(rate - 10 * rate_scale);
-        }
-        print_statistics(0);
-        break;
+            /* Screens 6, 7, 8, 9  are for the extra RTD repartitions. */
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            currentScreenToDisplay = DISPLAY_SECONDARY_REPARTITION_SCREEN;
+            currentRepartitionToDisplay = (c - '6') + 2;
+            print_statistics(0);
+            break;
 
-    case 'p':
-        if (paused) {
-            CallGenerationTask::set_paused(false);
-        } else {
-            CallGenerationTask::set_paused(true);
-        }
-        print_statistics(0);
-        break;
+        case '+':
+            if (users >= 0) {
+                CallGenerationTask::set_users((int)(users + 1 * rate_scale));
+            } else {
+                CallGenerationTask::set_rate(rate + 1 * rate_scale);
+            }
+            print_statistics(0);
+            break;
 
-    case 's':
-        if (screenf) {
-            print_screens();
-        }
-        break;
+        case '-':
+            if (users >= 0) {
+                CallGenerationTask::set_users((int)(users - 1 * rate_scale));
+            } else {
+                CallGenerationTask::set_rate(rate - 1 * rate_scale);
+            }
+            print_statistics(0);
+            break;
 
-    case 'q':
-        quitting+=10;
-        print_statistics(0);
-        break;
+        case '*':
+            if (users >= 0) {
+                CallGenerationTask::set_users((int)(users + 10 * rate_scale));
+            } else {
+                CallGenerationTask::set_rate(rate + 10 * rate_scale);
+            }
+            print_statistics(0);
+            break;
 
-    case 'Q':
-        /* We are going to break, so we never have a chance to press q twice. */
-        quitting+=20;
-        print_statistics(0);
-        break;
+        case '/':
+            if (users >= 0) {
+                CallGenerationTask::set_users((int)(users - 10 * rate_scale));
+            } else {
+                CallGenerationTask::set_rate(rate - 10 * rate_scale);
+            }
+            print_statistics(0);
+            break;
+
+        case 'p':
+            if (paused) {
+                CallGenerationTask::set_paused(false);
+            } else {
+                CallGenerationTask::set_paused(true);
+            }
+            print_statistics(0);
+            break;
+
+        case 's':
+            if (screenf) {
+                print_screens();
+            }
+            break;
+
+        case 'q':
+            quitting+=10;
+            print_statistics(0);
+            break;
+
+        case 'Q':
+            /* We are going to break, so we never have a chance to press q twice. */
+            quitting+=20;
+            print_statistics(0);
+            break;
     }
     return false;
 }
@@ -578,7 +578,7 @@ void setup_ctrl_socket()
 }
 
 static void reset_stdin() {
-  fcntl(fileno(stdin), F_SETFL, stdin_mode);
+    fcntl(fileno(stdin), F_SETFL, stdin_mode);
 }
 
 void setup_stdin_socket()
@@ -730,38 +730,38 @@ int SIPpSocket::check_for_message()
         char c = socketbuf->buf[socketbuf->offset + len];
 
         switch(state) {
-        case CFM_CONTROL:
-            /* For CMD Message the escape char is the end of message */
-            if (c == 27) {
-                return len + 1; /* The plus one includes the control character. */
-            }
-            break;
-        case CFM_NORMAL:
-            if (c == '\r') {
-                state = CFM_CR;
-            }
-            break;
-        case CFM_CR:
-            if (c == '\n') {
-                state = CFM_CRLF;
-            } else {
-                state = CFM_NORMAL;
-            }
-            break;
-        case CFM_CRLF:
-            if (c == '\r') {
-                state = CFM_CRLFCR;
-            } else {
-                state = CFM_NORMAL;
-            }
-            break;
-        case CFM_CRLFCR:
-            if (c == '\n') {
-                state = CFM_CRLFCRLF;
-            } else {
-                state = CFM_NORMAL;
-            }
-            break;
+            case CFM_CONTROL:
+                /* For CMD Message the escape char is the end of message */
+                if (c == 27) {
+                    return len + 1; /* The plus one includes the control character. */
+                }
+                break;
+            case CFM_NORMAL:
+                if (c == '\r') {
+                    state = CFM_CR;
+                }
+                break;
+            case CFM_CR:
+                if (c == '\n') {
+                    state = CFM_CRLF;
+                } else {
+                    state = CFM_NORMAL;
+                }
+                break;
+            case CFM_CRLF:
+                if (c == '\r') {
+                    state = CFM_CRLFCR;
+                } else {
+                    state = CFM_NORMAL;
+                }
+                break;
+            case CFM_CRLFCR:
+                if (c == '\n') {
+                    state = CFM_CRLFCRLF;
+                } else {
+                    state = CFM_NORMAL;
+                }
+                break;
         }
 
         /* Head off failing because the buffer does not contain the whole header. */
@@ -898,36 +898,36 @@ int SIPpSocket::empty()
     socketbuf = alloc_socketbuf(buffer, readsize, NO_COPY, NULL);
 
     switch(ss_transport) {
-    case T_TCP:
-    case T_UDP:
-        ret = recvfrom(ss_fd, buffer, readsize, 0, (struct sockaddr *)&socketbuf->addr,  &addrlen);
-        break;
-    case T_TLS:
+        case T_TCP:
+        case T_UDP:
+            ret = recvfrom(ss_fd, buffer, readsize, 0, (struct sockaddr *)&socketbuf->addr,  &addrlen);
+            break;
+        case T_TLS:
 #ifdef USE_OPENSSL
-        ret = SSL_read(ss_ssl, buffer, readsize);
-        /* XXX: Check for clean shutdown. */
+            ret = SSL_read(ss_ssl, buffer, readsize);
+            /* XXX: Check for clean shutdown. */
 #else
-        ERROR("TLS support is not enabled!");
+            ERROR("TLS support is not enabled!");
 #endif
-        break;
-    case T_SCTP:
+            break;
+        case T_SCTP:
 #ifdef USE_SCTP
-        struct sctp_sndrcvinfo recvinfo;
-        memset(&recvinfo, 0, sizeof(recvinfo));
-        int msg_flags = 0;
+            struct sctp_sndrcvinfo recvinfo;
+            memset(&recvinfo, 0, sizeof(recvinfo));
+            int msg_flags = 0;
 
-        ret = sctp_recvmsg(ss_fd, (void*)buffer, readsize,
-                           (struct sockaddr *) &socketbuf->addr, &addrlen, &recvinfo, &msg_flags);
+            ret = sctp_recvmsg(ss_fd, (void*)buffer, readsize,
+                               (struct sockaddr *) &socketbuf->addr, &addrlen, &recvinfo, &msg_flags);
 
-        if (MSG_NOTIFICATION & msg_flags) {
-            errno = 0;
-            handleSCTPNotify(buffer);
-            ret = -2;
-        }
+            if (MSG_NOTIFICATION & msg_flags) {
+                errno = 0;
+                handleSCTPNotify(buffer);
+                ret = -2;
+            }
 #else
-        ERROR("SCTP support is not enabled!");
+            ERROR("SCTP support is not enabled!");
 #endif
-        break;
+            break;
     }
     if (ret <= 0) {
         free_socketbuf(socketbuf);
@@ -1050,9 +1050,9 @@ void SIPpSocket::close()
     int count = --ss_count;
 
     if (count == 0) {
-      invalidate();
-      sockets_pending_reset.erase(this);
-      delete this;
+        invalidate();
+        sockets_pending_reset.erase(this);
+        delete this;
     }
 }
 
@@ -1109,7 +1109,7 @@ void process_message(SIPpSocket *socket, char *msg, ssize_t msg_size, struct soc
     }
     if (sipMsgCheck(msg, socket) == false) {
         if (msg_size == 4 &&
-                (memcmp(msg, "\r\n\r\n", 4) == 0 || memcmp(msg, "\x00\x00\x00\x00", 4) == 0)) {
+            (memcmp(msg, "\r\n\r\n", 4) == 0 || memcmp(msg, "\x00\x00\x00\x00", 4) == 0)) {
             /* Common keepalives */;
         } else {
             WARNING("non SIP message discarded: \"%.*s\" (%zu)", (int)msg_size, msg, msg_size);
@@ -1142,7 +1142,7 @@ void process_message(SIPpSocket *socket, char *msg, ssize_t msg_size, struct soc
 
     if (!listener_ptr) {
         if (thirdPartyMode == MODE_3PCC_CONTROLLER_B || thirdPartyMode == MODE_3PCC_A_PASSIVE ||
-                thirdPartyMode == MODE_MASTER_PASSIVE || thirdPartyMode == MODE_SLAVE) {
+            thirdPartyMode == MODE_MASTER_PASSIVE || thirdPartyMode == MODE_SLAVE) {
             // Adding a new OUTGOING call !
             main_scenario->stats->computeStat(CStat::E_CREATE_OUTGOING_CALL);
             call *new_ptr = new call(call_id, local_ip_is_ipv6, 0, use_remote_sending_addr ? &remote_sending_sockaddr : &remote_sockaddr);
@@ -1152,26 +1152,26 @@ void process_message(SIPpSocket *socket, char *msg, ssize_t msg_size, struct soc
 
             outbound_congestion = false;
             if ((socket != main_socket) &&
-                    (socket != tcp_multiplex) &&
-                    (socket != localTwinSippSocket) &&
-                    (socket != twinSippSocket) &&
-                    (!is_a_local_socket(socket))) {
+                (socket != tcp_multiplex) &&
+                (socket != localTwinSippSocket) &&
+                (socket != twinSippSocket) &&
+                (!is_a_local_socket(socket))) {
                 new_ptr->associate_socket(socket);
                 socket->ss_count++;
             } else {
                 /* We need to hook this call up to a real *call* socket. */
                 if (!multisocket) {
                     switch(transport) {
-                    case T_UDP:
-                        new_ptr->associate_socket(main_socket);
-                        main_socket->ss_count++;
-                        break;
-                    case T_TCP:
-                    case T_SCTP:
-                    case T_TLS:
-                        new_ptr->associate_socket(tcp_multiplex);
-                        tcp_multiplex->ss_count++;
-                        break;
+                        case T_UDP:
+                            new_ptr->associate_socket(main_socket);
+                            main_socket->ss_count++;
+                            break;
+                        case T_TCP:
+                        case T_SCTP:
+                        case T_TLS:
+                            new_ptr->associate_socket(tcp_multiplex);
+                            tcp_multiplex->ss_count++;
+                            break;
                     }
                 }
             }
@@ -1257,18 +1257,18 @@ void process_message(SIPpSocket *socket, char *msg, ssize_t msg_size, struct soc
 }
 
 SIPpSocket::SIPpSocket(bool use_ipv6, int transport, int fd, int accepting):
-  ss_count(1),
-  ss_ipv6(use_ipv6),
-  ss_transport(transport),
-  ss_control(false),
-  ss_fd(fd),
-  ss_comp_state(NULL),
-  ss_changed_dest(false),
-  ss_congested(false),
-  ss_invalid(false),
-  ss_in(NULL),
-  ss_out(NULL),
-  ss_msglen(0)
+    ss_count(1),
+    ss_ipv6(use_ipv6),
+    ss_transport(transport),
+    ss_control(false),
+    ss_fd(fd),
+    ss_comp_state(NULL),
+    ss_changed_dest(false),
+    ss_congested(false),
+    ss_invalid(false),
+    ss_in(NULL),
+    ss_out(NULL),
+    ss_msglen(0)
 {
     /* Initialize all sockets with our destination address. */
     memcpy(&ss_dest, &remote_sockaddr, sizeof(ss_dest));
@@ -1305,9 +1305,9 @@ SIPpSocket::SIPpSocket(bool use_ipv6, int transport, int fd, int accepting):
         }
     }
 #else
-     pollfiles[ss_pollidx].fd      = ss_fd;
-     pollfiles[ss_pollidx].events  = POLLIN | POLLERR;
-     pollfiles[ss_pollidx].revents = 0;
+    pollfiles[ss_pollidx].fd      = ss_fd;
+    pollfiles[ss_pollidx].events  = POLLIN | POLLERR;
+    pollfiles[ss_pollidx].revents = 0;
 #endif
 }
 
@@ -1322,25 +1322,25 @@ static int socket_fd(bool use_ipv6, int transport)
     int fd;
 
     switch(transport) {
-    case T_UDP:
-        socket_type = SOCK_DGRAM;
-        protocol = IPPROTO_UDP;
-        break;
-    case T_SCTP:
+        case T_UDP:
+            socket_type = SOCK_DGRAM;
+            protocol = IPPROTO_UDP;
+            break;
+        case T_SCTP:
 #ifndef USE_SCTP
-        ERROR("You do not have SCTP support enabled!\n");
+            ERROR("You do not have SCTP support enabled!\n");
 #else
-        socket_type = SOCK_STREAM;
-        protocol = IPPROTO_SCTP;
+            socket_type = SOCK_STREAM;
+            protocol = IPPROTO_SCTP;
 #endif
-        break;
-    case T_TLS:
+            break;
+        case T_TLS:
 #ifndef USE_OPENSSL
-        ERROR("You do not have TLS support enabled!\n");
+            ERROR("You do not have TLS support enabled!\n");
 #endif
-    case T_TCP:
-        socket_type = SOCK_STREAM;
-        break;
+        case T_TCP:
+            socket_type = SOCK_STREAM;
+            break;
     }
 
     if ((fd = socket(use_ipv6 ? AF_INET6 : AF_INET, socket_type, protocol))== -1) {
@@ -1512,10 +1512,10 @@ int sipp_bind_socket(SIPpSocket *socket, struct sockaddr_storage *saddr, int *po
 
 int SIPpSocket::connect(struct sockaddr_storage* dest)
 {
-  if (dest)
-  {
-    memcpy(&ss_dest, dest, sizeof(*dest));
-  }
+    if (dest)
+    {
+        memcpy(&ss_dest, dest, sizeof(*dest));
+    }
 
     int ret;
 
@@ -1712,7 +1712,7 @@ void sipp_customize_socket(SIPpSocket *socket)
 
     /* Allows fast TCP reuse of the socket */
     if (socket->ss_transport == T_TCP || socket->ss_transport == T_TLS ||
-            socket->ss_transport == T_SCTP) {
+        socket->ss_transport == T_SCTP) {
         int sock_opt = 1;
 
         if (setsockopt(socket->ss_fd, SOL_SOCKET, SO_REUSEADDR, (void *)&sock_opt,
@@ -1775,19 +1775,19 @@ void sipp_customize_socket(SIPpSocket *socket)
 
     /* Increase buffer sizes for this sockets */
     if (setsockopt(socket->ss_fd,
-                  SOL_SOCKET,
-                  SO_SNDBUF,
-                  &buffsize,
-                  sizeof(buffsize))) {
+                   SOL_SOCKET,
+                   SO_SNDBUF,
+                   &buffsize,
+                   sizeof(buffsize))) {
         ERROR_NO("Unable to set socket sndbuf");
     }
 
     buffsize = buff_size;
     if (setsockopt(socket->ss_fd,
-                  SOL_SOCKET,
-                  SO_RCVBUF,
-                  &buffsize,
-                  sizeof(buffsize))) {
+                   SOL_SOCKET,
+                   SO_RCVBUF,
+                   &buffsize,
+                   sizeof(buffsize))) {
         ERROR_NO("Unable to set socket rcvbuf");
     }
 }
@@ -1796,7 +1796,7 @@ void sipp_customize_socket(SIPpSocket *socket)
 int SIPpSocket::enter_congestion(int again)
 {
     if (!ss_congested) {
-      nb_net_cong++;
+        nb_net_cong++;
     }
     ss_congested = true;
 
@@ -1810,7 +1810,7 @@ int SIPpSocket::enter_congestion(int again)
         WARNING_NO("Failed to set EPOLLOUT");
     }
 #else
-     pollfiles[ss_pollidx].events |= POLLOUT;
+    pollfiles[ss_pollidx].events |= POLLOUT;
 #endif
 
 #ifdef USE_SCTP
@@ -1840,7 +1840,7 @@ int SIPpSocket::write_error(int ret)
     }
 
     if ((ss_transport == T_TCP || ss_transport == T_SCTP)
-            && errno == EPIPE) {
+        && errno == EPIPE) {
         nb_net_send_errors++;
         abort();
         sockets_pending_reset.insert(this);
@@ -2184,7 +2184,7 @@ int send_sctp_nowait(int s, const void *msg, int len, int flags)
 #endif
 
 ssize_t SIPpSocket::write_primitive(const char* buffer, size_t len,
-                                      struct sockaddr_storage* dest)
+                                    struct sockaddr_storage* dest)
 {
     ssize_t rc;
 
@@ -2202,55 +2202,55 @@ ssize_t SIPpSocket::write_primitive(const char* buffer, size_t len,
     }
 
     switch(ss_transport) {
-    case T_TLS:
+        case T_TLS:
 #ifdef USE_OPENSSL
-        rc = send_nowait_tls(ss_ssl, buffer, len, 0);
+            rc = send_nowait_tls(ss_ssl, buffer, len, 0);
 #else
-        errno = EOPNOTSUPP;
-        rc = -1;
+            errno = EOPNOTSUPP;
+            rc = -1;
 #endif
-        break;
-    case T_SCTP:
+            break;
+        case T_SCTP:
 #ifdef USE_SCTP
-    {
-        TRACE_MSG("socket_write_primitive %d\n", sctpstate);
-        if (sctpstate == SCTP_DOWN) {
-            errno = EPIPE;
-            return -1;
-        } else if (sctpstate == SCTP_CONNECTING) {
-            errno = EWOULDBLOCK;
-            return -1;
-        }
-        rc = send_sctp_nowait(ss_fd, buffer, len, 0);
-    }
-#else
-    errno = EOPNOTSUPP;
-    rc = -1;
-#endif
-        break;
-    case T_TCP:
-        rc = send_nowait(ss_fd, buffer, len, 0);
-        break;
-
-    case T_UDP:
-        if (compression) {
-            static char comp_msg[SIPP_MAX_MSG_SIZE];
-            strncpy(comp_msg, buffer, sizeof(comp_msg) - 1);
-            if (comp_compress(&ss_comp_state,
-                             comp_msg,
-                             (unsigned int *) &len) != COMP_OK) {
-                ERROR("Compression plugin error");
+            {
+                TRACE_MSG("socket_write_primitive %d\n", sctpstate);
+                if (sctpstate == SCTP_DOWN) {
+                    errno = EPIPE;
+                    return -1;
+                } else if (sctpstate == SCTP_CONNECTING) {
+                    errno = EWOULDBLOCK;
+                    return -1;
+                }
+                rc = send_sctp_nowait(ss_fd, buffer, len, 0);
             }
-            buffer = (char *)comp_msg;
+#else
+            errno = EOPNOTSUPP;
+            rc = -1;
+#endif
+            break;
+        case T_TCP:
+            rc = send_nowait(ss_fd, buffer, len, 0);
+            break;
 
-            TRACE_MSG("---\nCompressed message len: %zu\n", len);
-        }
+        case T_UDP:
+            if (compression) {
+                static char comp_msg[SIPP_MAX_MSG_SIZE];
+                strncpy(comp_msg, buffer, sizeof(comp_msg) - 1);
+                if (comp_compress(&ss_comp_state,
+                                  comp_msg,
+                                  (unsigned int *) &len) != COMP_OK) {
+                    ERROR("Compression plugin error");
+                }
+                buffer = (char *)comp_msg;
 
-        rc = sendto(ss_fd, buffer, len, 0, _RCAST(struct sockaddr*, dest), sizeof(*dest));
-        break;
+                TRACE_MSG("---\nCompressed message len: %zu\n", len);
+            }
 
-    default:
-        ERROR("Internal error, unknown transport type %d\n", ss_transport);
+            rc = sendto(ss_fd, buffer, len, 0, _RCAST(struct sockaddr*, dest), sizeof(*dest));
+            break;
+
+        default:
+            ERROR("Internal error, unknown transport type %d\n", ss_transport);
     }
 
     return rc;
@@ -2289,7 +2289,7 @@ int SIPpSocket::flush()
 int SIPpSocket::write(const char *buffer, ssize_t len, int flags, struct sockaddr_storage *dest)
 {
     int rc;
-    
+
     if (ss_out) {
         rc = flush();
         TRACE_MSG("Attempted socket flush returned %d\r\n", rc);
@@ -2608,7 +2608,7 @@ int open_connections()
     }
 
     if ((!multisocket) && (transport == T_TCP || transport == T_TLS || transport == T_SCTP) &&
-            (sendMode != MODE_SERVER)) {
+        (sendMode != MODE_SERVER)) {
         if ((tcp_multiplex = new_sipp_socket(local_ip_is_ipv6, transport)) == NULL) {
             ERROR_NO("Unable to get a TCP socket");
         }
@@ -2872,11 +2872,11 @@ void free_peer_addr_map()
 void SIPpSocket::pollset_process(int wait)
 {
     int rs; /* Number of times to execute recv().
-            For TCP with 1 socket per call:
-                no. of events returned by poll
-            For UDP and TCP with 1 global socket:
-                recv_count is a flag that stays up as
-                long as there's data to read */
+               For TCP with 1 socket per call:
+               no. of events returned by poll
+               For UDP and TCP with 1 global socket:
+               recv_count is a flag that stays up as
+               long as there's data to read */
 
 #ifndef HAVE_EPOLL
     /* What index should we try reading from? */
@@ -2931,214 +2931,214 @@ void SIPpSocket::pollset_process(int wait)
     for (int event_idx = 0; event_idx < rs; event_idx++) {
         int poll_idx = (int)epollevents[event_idx].data.u32;
 #else
-    for (size_t poll_idx = 0; rs > 0 && poll_idx < pollnfds; poll_idx++) {
+        for (size_t poll_idx = 0; rs > 0 && poll_idx < pollnfds; poll_idx++) {
 #endif
-        SIPpSocket *sock = sockets[poll_idx];
-        int events = 0;
-        int ret = 0;
+            SIPpSocket *sock = sockets[poll_idx];
+            int events = 0;
+            int ret = 0;
 
-        assert(sock);
+            assert(sock);
 
 #ifdef HAVE_EPOLL
-        if (epollevents[event_idx].events & EPOLLOUT) {
+            if (epollevents[event_idx].events & EPOLLOUT) {
 #else
-        if (pollfiles[poll_idx].revents & POLLOUT) {
+                if (pollfiles[poll_idx].revents & POLLOUT) {
 #endif
 
 #ifdef USE_SCTP
-            if (transport == T_SCTP && sock->sctpstate != SCTP_UP);
-            else
-#endif
-            {
-                /* We can flush this socket. */
-                TRACE_MSG("Exit problem event on socket %d \n", sock->ss_fd);
-#ifdef HAVE_EPOLL
-                epollfiles[poll_idx].events &= ~EPOLLOUT;
-                int rc = epoll_ctl(epollfd, EPOLL_CTL_MOD, sock->ss_fd, &epollfiles[poll_idx]);
-                if (rc == -1) {
-                    ERROR_NO("Failed to clear EPOLLOUT");
-                }
-#else
-                pollfiles[poll_idx].events &= ~POLLOUT;
-#endif
-                sock->ss_congested = false;
-
-                sock->flush();
-                events++;
-            }
-        }
-
-#ifdef HAVE_EPOLL
-        if (epollevents[event_idx].events & EPOLLIN) {
-#else
-        if (pollfiles[poll_idx].revents & POLLIN) {
-#endif
-            /* We can empty this socket. */
-            if ((transport == T_TCP || transport == T_TLS || transport == T_SCTP) && sock == main_socket) {
-                SIPpSocket *new_sock = sock->accept();
-                if (!new_sock) {
-                    ERROR_NO("Accepting new TCP connection.\n");
-                }
-            } else if (sock == ctrl_socket) {
-                handle_ctrl_socket();
-            } else if (sock == stdin_socket) {
-                handle_stdin_socket();
-            } else if (sock == localTwinSippSocket) {
-                if (thirdPartyMode == MODE_3PCC_CONTROLLER_B) {
-                    twinSippSocket = sock->accept();
-                    if (!twinSippMode) {
-                        ERROR_NO("Accepting new TCP connection on Twin SIPp Socket.\n");
-                    }
-                    twinSippSocket->ss_control = 1;
-                } else {
-                    /* 3pcc extended mode: open a local socket
-                       which will be used for reading the infos sent by this remote
-                       twin sipp instance (slave or master) */
-                    if (local_nb == MAX_LOCAL_TWIN_SOCKETS) {
-                        ERROR("Max number of twin instances reached\n");
-                    }
-
-                    SIPpSocket *localSocket = sock->accept();
-                    localSocket->ss_control = 1;
-                    local_sockets[local_nb] = localSocket;
-                    local_nb++;
-                    if (!peers_connected) {
-                        connect_to_all_peers();
-                    }
-                }
-            } else {
-                if ((ret = sock->empty()) <= 0) {
-#ifdef USE_SCTP
-                    if (sock->ss_transport == T_SCTP && ret == -2);
+                    if (transport == T_SCTP && sock->sctpstate != SCTP_UP);
                     else
 #endif
                     {
-                        ret = sock->read_error(ret);
-                        if (ret == 0) {
-                            /* If read_error() then the poll_idx now belongs
-                             * to the newest/last socket added to the sockets[].
-                             * Need to re-do the same poll_idx for the "new" socket.
-                             * We do this differently when using epoll. */
+                        /* We can flush this socket. */
+                        TRACE_MSG("Exit problem event on socket %d \n", sock->ss_fd);
 #ifdef HAVE_EPOLL
-                            for (int event_idx2 = event_idx + 1; event_idx2 < rs; event_idx2++) {
-                                if (epollevents[event_idx2].data.u32 == pollnfds) {
-                                    epollevents[event_idx2].data.u32 = poll_idx;
-                                }
-                            }
-#else
-                            poll_idx--;
-                            events++;
-                            rs--;
-#endif
-                            continue;
+                        epollfiles[poll_idx].events &= ~EPOLLOUT;
+                        int rc = epoll_ctl(epollfd, EPOLL_CTL_MOD, sock->ss_fd, &epollfiles[poll_idx]);
+                        if (rc == -1) {
+                            ERROR_NO("Failed to clear EPOLLOUT");
                         }
+#else
+                        pollfiles[poll_idx].events &= ~POLLOUT;
+#endif
+                        sock->ss_congested = false;
+
+                        sock->flush();
+                        events++;
                     }
                 }
-            }
-            events++;
-        }
-
-        /* Here the logic diverges; if we're using epoll, we want to stay in the
-         * for-each-socket loop and handle messages on that socket. If we're not using
-         * epoll, we want to wait until after that loop, and spin through our
-         * pending_messages queue again. */
 
 #ifdef HAVE_EPOLL
-        unsigned old_pollnfds = pollnfds;
-        getmilliseconds();
-        /* Keep processing messages until this socket is freed (changing the number of file descriptors) or we run out of messages. */
-        while ((pollnfds == old_pollnfds) &&
-                (sock->message_ready())) {
-            char msg[SIPP_MAX_MSG_SIZE];
-            struct sockaddr_storage src;
-            ssize_t len;
+                if (epollevents[event_idx].events & EPOLLIN) {
+#else
+                    if (pollfiles[poll_idx].revents & POLLIN) {
+#endif
+                        /* We can empty this socket. */
+                        if ((transport == T_TCP || transport == T_TLS || transport == T_SCTP) && sock == main_socket) {
+                            SIPpSocket *new_sock = sock->accept();
+                            if (!new_sock) {
+                                ERROR_NO("Accepting new TCP connection.\n");
+                            }
+                        } else if (sock == ctrl_socket) {
+                            handle_ctrl_socket();
+                        } else if (sock == stdin_socket) {
+                            handle_stdin_socket();
+                        } else if (sock == localTwinSippSocket) {
+                            if (thirdPartyMode == MODE_3PCC_CONTROLLER_B) {
+                                twinSippSocket = sock->accept();
+                                if (!twinSippMode) {
+                                    ERROR_NO("Accepting new TCP connection on Twin SIPp Socket.\n");
+                                }
+                                twinSippSocket->ss_control = 1;
+                            } else {
+                                /* 3pcc extended mode: open a local socket
+                                   which will be used for reading the infos sent by this remote
+                                   twin sipp instance (slave or master) */
+                                if (local_nb == MAX_LOCAL_TWIN_SOCKETS) {
+                                    ERROR("Max number of twin instances reached\n");
+                                }
 
-            len = sock->read_message(msg, sizeof(msg), &src);
-            if (len > 0) {
-                process_message(sock, msg, len, &src);
-            } else {
-                assert(0);
-            }
-        }
+                                SIPpSocket *localSocket = sock->accept();
+                                localSocket->ss_control = 1;
+                                local_sockets[local_nb] = localSocket;
+                                local_nb++;
+                                if (!peers_connected) {
+                                    connect_to_all_peers();
+                                }
+                            }
+                        } else {
+                            if ((ret = sock->empty()) <= 0) {
+#ifdef USE_SCTP
+                                if (sock->ss_transport == T_SCTP && ret == -2);
+                                else
+#endif
+                                {
+                                    ret = sock->read_error(ret);
+                                    if (ret == 0) {
+                                        /* If read_error() then the poll_idx now belongs
+                                         * to the newest/last socket added to the sockets[].
+                                         * Need to re-do the same poll_idx for the "new" socket.
+                                         * We do this differently when using epoll. */
+#ifdef HAVE_EPOLL
+                                        for (int event_idx2 = event_idx + 1; event_idx2 < rs; event_idx2++) {
+                                            if (epollevents[event_idx2].data.u32 == pollnfds) {
+                                                epollevents[event_idx2].data.u32 = poll_idx;
+                                            }
+                                        }
+#else
+                                        poll_idx--;
+                                        events++;
+                                        rs--;
+#endif
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                        events++;
+                    }
 
-        if (pollnfds != old_pollnfds) {
-            /* Processing messages has changed the number of pollnfds, so update any remaining events */
-            for (int event_idx2 = event_idx + 1; event_idx2 < rs; event_idx2++) {
-                if (epollevents[event_idx2].data.u32 == pollnfds) {
-                    epollevents[event_idx2].data.u32 = poll_idx;
-                }
-            }
-        }
+                    /* Here the logic diverges; if we're using epoll, we want to stay in the
+                     * for-each-socket loop and handle messages on that socket. If we're not using
+                     * epoll, we want to wait until after that loop, and spin through our
+                     * pending_messages queue again. */
+
+#ifdef HAVE_EPOLL
+                    unsigned old_pollnfds = pollnfds;
+                    getmilliseconds();
+                    /* Keep processing messages until this socket is freed (changing the number of file descriptors) or we run out of messages. */
+                    while ((pollnfds == old_pollnfds) &&
+                           (sock->message_ready())) {
+                        char msg[SIPP_MAX_MSG_SIZE];
+                        struct sockaddr_storage src;
+                        ssize_t len;
+
+                        len = sock->read_message(msg, sizeof(msg), &src);
+                        if (len > 0) {
+                            process_message(sock, msg, len, &src);
+                        } else {
+                            assert(0);
+                        }
+                    }
+
+                    if (pollnfds != old_pollnfds) {
+                        /* Processing messages has changed the number of pollnfds, so update any remaining events */
+                        for (int event_idx2 = event_idx + 1; event_idx2 < rs; event_idx2++) {
+                            if (epollevents[event_idx2].data.u32 == pollnfds) {
+                                epollevents[event_idx2].data.u32 = poll_idx;
+                            }
+                        }
+                    }
 #else
 
-        if (events) {
-            rs--;
-        }
-        pollfiles[poll_idx].revents = 0;
+                    if (events) {
+                        rs--;
+                    }
+                    pollfiles[poll_idx].revents = 0;
 #endif
-    }
+                }
 
 #ifndef HAVE_EPOLL
-    if (read_index >= pollnfds) {
-        read_index = 0;
-    }
+                if (read_index >= pollnfds) {
+                    read_index = 0;
+                }
 
-    /* We need to process any new messages that we read. */
-    while (pending_messages && (loops > 0)) {
-        getmilliseconds();
+                /* We need to process any new messages that we read. */
+                while (pending_messages && (loops > 0)) {
+                    getmilliseconds();
 
-        if (sockets[read_index]->ss_msglen) {
-            char msg[SIPP_MAX_MSG_SIZE];
-            struct sockaddr_storage src;
-            ssize_t len;
+                    if (sockets[read_index]->ss_msglen) {
+                        char msg[SIPP_MAX_MSG_SIZE];
+                        struct sockaddr_storage src;
+                        ssize_t len;
 
-            len = read_message(sockets[read_index], msg, sizeof(msg), &src);
-            if (len > 0) {
-                process_message(sockets[read_index], msg, len, &src);
-            } else {
-                assert(0);
-            }
-            loops--;
-        }
-        read_index = (read_index + 1) % pollnfds;
-    }
+                        len = read_message(sockets[read_index], msg, sizeof(msg), &src);
+                        if (len > 0) {
+                            process_message(sockets[read_index], msg, len, &src);
+                        } else {
+                            assert(0);
+                        }
+                        loops--;
+                    }
+                    read_index = (read_index + 1) % pollnfds;
+                }
 
-    cpu_max = (loops <= 0);
+                cpu_max = (loops <= 0);
 #endif
-}
+            }
 
 
 
-/***************** Check of the message received ***************/
+            /***************** Check of the message received ***************/
 
-bool sipMsgCheck (const char *P_msg, SIPpSocket *socket)
-{
-    const char C_sipHeader[] = "SIP/2.0";
+            bool sipMsgCheck (const char *P_msg, SIPpSocket *socket)
+            {
+                const char C_sipHeader[] = "SIP/2.0";
 
-    if (socket == twinSippSocket || socket == localTwinSippSocket ||
-            is_a_peer_socket(socket) || is_a_local_socket(socket))
-        return true;
+                if (socket == twinSippSocket || socket == localTwinSippSocket ||
+                    is_a_peer_socket(socket) || is_a_local_socket(socket))
+                    return true;
 
-    if (strstr(P_msg, C_sipHeader) !=  NULL) {
-        return true;
-    }
+                if (strstr(P_msg, C_sipHeader) !=  NULL) {
+                    return true;
+                }
 
-    return false;
-}
+                return false;
+            }
 
 
 #ifdef GTEST
 
 #include "gtest/gtest.h"
 
-TEST(get_trimmed_call_id, noslashes) {
-    EXPECT_STREQ("abc", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: abc\r\nCall-ID: def\r\n\r\n"));
-}
+            TEST(get_trimmed_call_id, noslashes) {
+                EXPECT_STREQ("abc", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: abc\r\nCall-ID: def\r\n\r\n"));
+            }
 
-TEST(get_trimmed_call_id, withslashes) {
-    EXPECT_STREQ("abc2", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: ///abc2\r\nCall-ID: def\r\n\r\n"));
-    EXPECT_STREQ("abc3", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: abc2///abc3\r\nCall-ID: def\r\n\r\n"));
-    EXPECT_STREQ("abc4///abc5", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: abc3///abc4///abc5\r\nCall-ID: def\r\n\r\n"));
-}
+            TEST(get_trimmed_call_id, withslashes) {
+                EXPECT_STREQ("abc2", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: ///abc2\r\nCall-ID: def\r\n\r\n"));
+                EXPECT_STREQ("abc3", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: abc2///abc3\r\nCall-ID: def\r\n\r\n"));
+                EXPECT_STREQ("abc4///abc5", get_trimmed_call_id("OPTIONS..\r\nBla: X\r\nCall-ID: abc3///abc4///abc5\r\nCall-ID: def\r\n\r\n"));
+            }
 
 #endif //GTEST
